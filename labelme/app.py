@@ -119,8 +119,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.theme_page = QtWidgets.QWidget()
 
-        self.theme_button = QPushButton()
-        self.theme_button.setText('海报主题提交')
+        #self.theme_button = QPushButton()
+        #self.theme_button.setText('海报主题提交')
 
         self.theme_widget = checkbox_own.CheckBoxSmart()
         self.theme_widget.Signal_OneParameter.connect(self.theme_signal_received)
@@ -132,12 +132,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         theme_layout.addWidget(self.theme_widget)
-        theme_layout.addWidget(self.theme_button)
+        #theme_layout.addWidget(self.theme_button)
 
         self.theme_page.setLayout(theme_layout)
 
-        self.theme_button.clicked.connect(self.theme_connected)
-        self.theme_button.clicked.connect(self.setDirty)
+        #self.theme_button.clicked.connect(self.theme_connected)
+        #self.theme_button.clicked.connect(self.setDirty)
 
         self.theme_dock.setWidget(self.theme_page)
 
@@ -873,7 +873,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if is_og:
             self.setClean()
             print('hello, og')
-        else:
+        elif self.filename is not None:
             self.setDirty()
 ####################################################################
 
@@ -902,11 +902,24 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setDirty(self):
         if self._config["auto_save"] or self.actions.saveAuto.isChecked():
+
+
+            print('f_on')
+
+            print('?')
+            print(self.imagePath)
+            #print(osp.splitext(self.imagePath))
             label_file = osp.splitext(self.imagePath)[0] + ".json"
+
+            print('f_off')
+
+
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
                 label_file = osp.join(self.output_dir, label_file_without_path)
+
             self.saveLabels(label_file)
+            #####################################################################################
             return
         self.dirty = True
         self.actions.save.setEnabled(True)
@@ -1271,6 +1284,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.flag_widget.addItem(item)
 
     def saveLabels(self, filename):
+
         lf = LabelFile()
 
         def format_shape(s):
@@ -1549,6 +1563,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.imagePath = filename
             self.labelFile = None
         image = QtGui.QImage.fromData(self.imageData)
+
         self.theme_widget.set_uncheckable(False)
 
         if image.isNull():
